@@ -1,0 +1,68 @@
+services:
+  gateway:
+    build:
+      context: ./infra/nginx
+      dockerfile: Dockerfile
+    container_name: nginx_gateway
+    ports:
+      - "9090:9090"
+    depends_on:
+      go_api:
+        condition: service_healthy
+      py_api:
+        condition: service_healthy
+    networks:
+      - revamp_net
+    restart: unless-stopped
+    volumes:
+      - nginx_logs:/var/log/nginx
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/nginx-health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  go_api:
+    build:
+      context: ./apps/go-api
+      dockerfile: Dockerfile
+    container_name: go_api
+    expose:
+      - "7001"
+    networks:
+      - revamp_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7001/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+  py_api:
+    build:
+      context: ./apps/py-api
+      dockerfile: Dockerfile
+    container_name: py_api
+    expose:
+      - "7002"
+    networks:
+      - revamp_net
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7002/ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+networks:
+  revamp_net:
+    driver: bridge
+    name: revamp_net
+
+volumes:
+  nginx_logs:
+    name: revamp_nginx_logs
+
