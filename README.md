@@ -1,4 +1,4 @@
-# dpdzero-revamp
+# FS-revamp
 
 A fresh microservices setup with an Nginx gateway and two backend services.
 
