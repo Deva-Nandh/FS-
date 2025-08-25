@@ -1,0 +1,14 @@
+.DS_Store
+**/.DS_Store
+node_modules/
+venv/
+__pycache__/
+*.pyc
+.env
+.env*
+*.log
+# Go
+apps/go-api/go.sum
+# Python
+apps/py-api/.venv/
+

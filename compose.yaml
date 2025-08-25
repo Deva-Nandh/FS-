@@ -15,7 +15,7 @@ services:
       - revamp_net
     restart: unless-stopped
     volumes:
-      - nginx_logs:/var/log/nginx
+      - ./data/logs/nginx:/var/log/nginx
     healthcheck:
       test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/nginx-health"]
       interval: 30s
@@ -62,7 +62,4 @@ networks:
     driver: bridge
     name: revamp_net
 
-volumes:
-  nginx_logs:
-    name: revamp_nginx_logs
 
