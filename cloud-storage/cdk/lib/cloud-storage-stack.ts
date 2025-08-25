@@ -38,6 +38,14 @@ export class CloudStorageStack extends Stack {
       removalPolicy: RemovalPolicy.RETAIN,
     });
 
+    // GSI to list files by owner (and sort by createdAt)
+    table.addGlobalSecondaryIndex({
+      indexName: 'byOwner',
+      partitionKey: { name: 'ownerId', type: dynamodb.AttributeType.STRING },
+      sortKey: { name: 'createdAt', type: dynamodb.AttributeType.STRING },
+      projectionType: dynamodb.ProjectionType.ALL,
+    });
+
     // Cognito User Pool for authentication
     const userPool = new cognito.UserPool(this, 'UserPool', {
       selfSignUpEnabled: true,

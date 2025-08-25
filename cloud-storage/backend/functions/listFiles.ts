@@ -9,15 +9,16 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   try {
     const userId = event.requestContext.authorizer?.jwt?.claims?.sub || 'unknown';
 
-    // List files for this user (items where sk starts with OWNER#)
+    // Query by owner using GSI (byOwner)
     const res = await ddb.send(new QueryCommand({
       TableName: TABLE_NAME,
-      KeyConditionExpression: 'pk BETWEEN :filePrefix AND :fileSuffix',
+      IndexName: 'byOwner',
+      KeyConditionExpression: 'ownerId = :uid',
       ExpressionAttributeValues: {
-        ':filePrefix': 'FILE#',
-        ':fileSuffix': 'FILE$' // hacky end; consider a GSI in a real setup
+        ':uid': userId,
       },
-      Limit: 50
+      ScanIndexForward: false,
+      Limit: 50,
     }));
 
     return { statusCode: 200, body: JSON.stringify({ items: res.Items || [] }) };
