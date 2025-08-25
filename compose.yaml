@@ -17,7 +17,7 @@ services:
     volumes:
       - ./data/logs/nginx:/var/log/nginx
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:9090/nginx-health"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:9090/nginx-health || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -34,7 +34,7 @@ services:
       - revamp_net
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7001/ping"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:7001/ping || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -51,7 +51,7 @@ services:
       - revamp_net
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:7002/ping"]
+      test: ["CMD-SHELL", "curl -fsS http://localhost:7002/ping || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
