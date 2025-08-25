@@ -1,5 +1,8 @@
 FROM nginx:1.27-alpine
 
+# Install curl for healthcheck
+RUN apk add --no-cache curl
+
 # Copy nginx config
 COPY nginx.conf /etc/nginx/nginx.conf
 

@@ -6,7 +6,7 @@ COPY . .
 RUN go build -o /out/go-api
 
 FROM alpine:3.20
-RUN apk add --no-cache ca-certificates && adduser -D -H app && mkdir -p /app
+RUN apk add --no-cache ca-certificates curl && adduser -D -H app && mkdir -p /app
 COPY --from=builder /out/go-api /app/go-api
 USER app
 EXPOSE 7001
